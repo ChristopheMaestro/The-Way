@@ -1,5 +1,7 @@
 # The Way / La Voie
 
+![The opening: the Prologue of John, told over seven pictures](screenshots/intro.gif)
+
 A 2D pixel-art RPG built from the four Gospels, compiled into a single story. Playable in **English and French**, on a computer or a phone.
 
 Inspired by *Undertale* and *Deltarune*: every enemy can be spared, and every boss is a bullet-hell with its own mechanic.
@@ -7,8 +9,6 @@ Inspired by *Undertale* and *Deltarune*: every enemy can be spared, and every bo
 Made by Christophe Maestro, 2026. A birthday gift for Guy la Guiche. Licence: GNU GPL v3.
 
 ## Screenshots
-
-![The opening: the Prologue of John, told over seven pictures](screenshots/intro.gif)
 
 ![The title screen](screenshots/title.png)
 
