@@ -1,0 +1,9 @@
+# local snapshots and developer tools
+backup-*/
+debug/
+
+# OS / editor junk
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
