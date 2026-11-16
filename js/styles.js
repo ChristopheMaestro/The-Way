@@ -43,8 +43,9 @@ const STYLES = {
   tomb8: { pal: 'tombs', fx: 'mist', deco: { 'M': 6 } },
   // chapter 9 — Jerusalem
   olivet: { pal: 'spring', fx: 'petals', deco: { 'a': 3 } },
-  jerusalem: { pal: 'jerusalem', fx: 'dust', deco: { 'U': 8, 'A': 5, 'H': 4 }, swap: { 'm': 'l' } },
-  temple: { pal: 'jerusalem', fx: 'rays', deco: { 'U': 14, 'H': 2 }, swap: { 'm': 'l' } },
+  /* Jerusalem (jerusalem.js) is drawn by hand: only the palette and the air are set here */
+  jgate: { pal: 'jerusalem', fx: 'dust' }, jerusalem: { pal: 'jerusalem', fx: 'dust' }, jquarter: { pal: 'jerusalem', fx: 'dust' }, jsteps: { pal: 'jerusalem', fx: 'dust' },
+  temple: { pal: 'holy', fx: 'rays' },
   // chapter 10 — the garden
   kidron: { pal: 'night', fx: 'fireflies', deco: { 'C': 4, 'M': 2 } },
   gethsemane: { pal: 'night', fx: ['fireflies', 'embers'], deco: { 'C': 6, 'M': 2 } },
@@ -108,33 +109,65 @@ const LM = {
   cypress: [1, ['A cypress, tall and quiet. It points at the sky like a finger that has said enough.', 'Un cyprès, haut et silencieux. Il montre le ciel comme un doigt qui en a assez dit.']],
   bigpalm: [1, ['A date palm. Far too tall to climb, and far too good at being tall.', 'Un palmier-dattier. Beaucoup trop haut pour y grimper, et beaucoup trop doué pour ça.']],
   tent: [3, ['A shepherd’s tent of goat hair. Empty. Someone left a pot of lentils, still warm.', 'Une tente de berger en poil de chèvre. Vide. Quelqu’un a laissé un pot de lentilles, encore tiède.']],
-  bigrock: [2, ['A heap of boulders. Nothing grows in their shade, and nothing needs to.', 'Un tas de rochers. Rien ne pousse à leur ombre, et rien n’a besoin de le faire.']]
+  bigrock: [2, ['A heap of boulders. Nothing grows in their shade, and nothing needs to.', 'Un tas de rochers. Rien ne pousse à leur ombre, et rien n’a besoin de le faire.']],
+  /* story landmarks: [footprint in tiles, text (or a function that returns it), { near: a tile that must be close by, on: runs when examined }] */
+  sycamore: [3, ['A sycamore with a very low bough, the kind a small man could climb in a hurry. Somebody left a very small ladder at the foot.', 'Un sycomore à la branche très basse, de celles où un petit homme grimpe en un clin d’œil. Quelqu’un a laissé une toute petite échelle au pied.']],
+  jars6: [3, () => G.flags.weddingDone
+    ? ['Six stone jars, empty now. They smell of the best wine of the feast. Nobody dares to taste the rim twice.', 'Six jarres de pierre, vides à présent. Elles sentent le meilleur vin de la fête. Personne n’ose goûter le bord deux fois.']
+    : ['Six stone jars for the washing rites, filled to the brim with plain water. For now.', 'Six jarres de pierre pour les ablutions, pleines à ras bord d’eau toute simple. Pour l’instant.']],
+  taxbooth: [3, () => G.flags.matDone
+    ? ['The tax booth. The chair is empty and the ledger is still open at an unfinished line. Whoever sat here simply stood up and left.', 'Le comptoir du péage. La chaise est vide et le registre reste ouvert sur une ligne inachevée. Celui qui était assis là s’est simplement levé et il est parti.']
+    : ['A tax booth: coins in neat stacks, a ledger, a pair of scales that lean a little to the collector’s side. Nobody smiles near it.', 'Un comptoir de péage : des pièces en piles bien rangées, un registre, une balance qui penche un peu du côté du collecteur. Personne ne sourit près de lui.']],
+  mustard: [3, ['The smallest of all seeds, and now a tree big enough for the birds to nest in. Somebody tried to count the birds. They lost count.', 'La plus petite de toutes les graines, et maintenant un arbre assez grand pour que les oiseaux y nichent. Quelqu’un a essayé de compter les oiseaux. Il a perdu le compte.']],
+  preach: [3, ['A broad flat rock with a folded cloak on it, facing the slope. The grass is worn where a crowd has sat.', 'Un large rocher plat avec un manteau plié dessus, face à la pente. L’herbe est usée là où une foule s’est assise.']],
+  barrenfig: [2, ['A fig tree with plenty of leaf-shaped hopes and not one fig. A single shrivelled fruit lies on the ground, as if to prove the point.', 'Un figuier avec beaucoup de promesses en forme de feuilles et pas une seule figue. Un fruit ratatiné gît par terre, comme pour en faire la preuve.']],
+  oilpress: [3, ['An olive press: a stone basin, a millstone, a long beam. In Hebrew it is “gat shemanim”. Gethsemane. The garden is named after this.', 'Un pressoir à olives : une cuve de pierre, une meule, une longue poutre. En hébreu : « gat shemanim ». Gethsémani. Le jardin porte le nom de ceci.']],
+  rooster: [1, ['A stone rooster on a pillar, facing the east. It has not crowed yet. Perhaps it is waiting.', 'Un coq de pierre sur un pilier, tourné vers l’orient. Il n’a pas encore chanté. Peut-être attend-il.'], { on: () => { if (typeof W !== 'undefined' && W) W.shake = .35; } }],
+  tomb: [3, ['A tomb cut into the rock. The great round stone has been rolled aside. Inside, only the linen, folded on the shelf.', 'Un tombeau taillé dans le roc. La grande pierre ronde a été roulée de côté. À l’intérieur, seulement le linge, plié sur la banquette.']],
+  well: [2, ['A well. The rope is worn smooth by a thousand hands, and the water is cold and sweet.', 'Un puits. La corde est polie par mille mains, et l’eau est fraîche et douce.']],
+  netrack: [3, ['Nets hung out to dry. They smell of lake and morning. One of them has a very recent repair.', 'Des filets mis à sécher. Ils sentent le lac et le matin. L’un d’eux a une réparation toute récente.'], { near: '~' }],
+  fold: [3, ['A sheepfold: stone walls, thorn on top and one open gate. The sheep trust the one who counts them.', 'Un enclos à brebis : des murs de pierre, des épines au sommet et une porte ouverte. Les brebis font confiance à celui qui les compte.']],
+  watchtower: [2, ['A vineyard watchtower. From the top you can see the whole hillside, and any thief on it.', 'Une tour de garde de vigne. Du sommet on voit toute la colline, et tout voleur qui s’y trouve.']]
 };
+const RELAX = new Set(['sycamore', 'jars6', 'taxbooth', 'mustard', 'preach', 'barrenfig', 'oilpress', 'rooster', 'tomb', 'well', 'netrack', 'fold', 'watchtower']);
 const BIGS = {
-  road: [['bigtree', 1]], bethlehem: [['cypress', 2]], nazareth: [['bigolive', 1]],
-  jordan: [['bigtree', 1]], wild: [['bigrock', 3]], wild10: [['bigrock', 2]], wild30: [['bigrock', 1]], galilee: [['bigtree', 1]], capernaum: [['cypress', 2]], cana: [['bigtree', 1]],
-  gerasa: [['bigrock', 3]], hillside: [['bigtree', 1], ['tent', 1]], caesarea: [['bigtree', 1]], shore5: [['bigtree', 1]], nain: [['cypress', 3]],
-  mount: [['bigtree', 2]], boatshore: [['bigtree', 1]], hills6: [['bigtree', 1], ['tent', 1]], jericho6: [['bigrock', 3]], soils: [['bigtree', 1]],
-  samaria: [['tent', 1], ['bigrock', 2]], jericho: [['bigpalm', 4], ['bigtree', 1]], bethany_road: [['cypress', 3]], bethany: [['cypress', 3]],
-  garden8: [['bigolive', 2]], tomb8: [['bigrock', 2]], olivet: [['bigolive', 2]], jerusalem: [['cypress', 3]],
-  kidron: [['bigolive', 2]], gethsemane: [['bigolive', 3]], golgotha: [['bigrock', 2]], garden12: [['bigolive', 1], ['cypress', 2]],
-  emmaus: [['bigtree', 2]], shore12: [['bigtree', 1]], hill12: [['bigtree', 2]]
+  /* the story landmarks are listed last on purpose: they never move the older ones */
+  road: [['bigtree', 1], ['fold', 1]], bethlehem: [['cypress', 2]], nazareth: [['bigolive', 1], ['well', 1]],
+  jordan: [['bigtree', 1]], wild: [['bigrock', 3]], wild10: [['bigrock', 2]], wild30: [['bigrock', 1]], galilee: [['bigtree', 1], ['netrack', 1]], capernaum: [['cypress', 2], ['taxbooth', 1]], cana: [['bigtree', 1], ['jars6', 1], ['watchtower', 1]],
+  gerasa: [['bigrock', 3]], hillside: [['bigtree', 1], ['tent', 1], ['fold', 1], ['watchtower', 1]], caesarea: [['bigtree', 1]], shore5: [['bigtree', 1], ['netrack', 1]], nain: [['cypress', 3]],
+  mount: [['bigtree', 2], ['preach', 1]], boatshore: [['bigtree', 1], ['netrack', 1]], hills6: [['bigtree', 1], ['tent', 1], ['mustard', 1], ['fold', 1]], jericho6: [['bigrock', 3]], soils: [['bigtree', 1]],
+  samaria: [['tent', 1], ['bigrock', 2], ['well', 1]], jericho: [['bigpalm', 4], ['bigtree', 1], ['sycamore', 1]], bethany_road: [['cypress', 3]], bethany: [['cypress', 3], ['well', 1]],
+  garden8: [['bigolive', 2]], tomb8: [['bigrock', 2]], olivet: [['bigolive', 2], ['barrenfig', 1], ['watchtower', 1]],
+  kidron: [['bigolive', 2]], gethsemane: [['bigolive', 3], ['oilpress', 1]], courtyard: [['rooster', 1]], golgotha: [['bigrock', 2]], garden12: [['bigolive', 1], ['cypress', 2], ['tomb', 1]],
+  emmaus: [['bigtree', 2]], shore12: [['bigtree', 1], ['netrack', 1]], hill12: [['bigtree', 2]]
 };
 function placeLandmarks(d, id, keep, rn) {
   const list = BIGS[id]; if (!list) return;
   const w = d.w, h = d.h, g = d.g, SOL = Spr.SOLID, ground = new Set(['.', ',', 's', 'q', 'm', 'l']), inb = (x, y) => x >= 0 && y >= 0 && x < w && y < h;
   const placed = []; d.npcs = d.npcs || [];
   for (const [spr, n] of list) for (let k = 0; k < n; k++) {
-    const fw = LM[spr][0], cand = [];
+    const lm = LM[spr], fw = lm[0], opt = lm[2] || {}; let cand = [];
     for (let y = 5; y < h - 3; y++) for (let x = 3; x < w - 3 - fw; x++) {
       let ok = true;
       for (let j = -2; j <= 1 && ok; j++) for (let i = -1; i <= fw && ok; i++) { const xx = x + i, yy = y + j; if (!inb(xx, yy) || keep[yy][xx] || SOL.has(g[yy][xx]) || !ground.has(g[yy][xx])) ok = false; }   // the footprint and a ring around it: open, plain ground
       if (ok && placed.every(([px, py]) => Math.abs(px - x) + Math.abs(py - y) > 6)) cand.push([x, y]);
     }
+    if (opt.near) { const nc = cand.filter(([x, y]) => { for (let j = y - 4; j <= y + 4; j++) for (let i = x - 4; i <= x + fw + 3; i++) if (inb(i, j) && g[j][i] === opt.near) return true; return false; }); if (nc.length) cand = nc; }   // e.g. drying nets stand by the water
+    if (!cand.length && RELAX.has(spr)) {   // tight map: the story landmarks settle for just a free footprint with room to stand in front, and nobody hidden behind the crown
+      const free = (xx, yy) => inb(xx, yy) && !SOL.has(g[yy][xx]) && ground.has(g[yy][xx]);
+      for (let y = 4; y < h - 2; y++) for (let x = 2; x < w - 2 - fw; x++) {
+        let ok = true;
+        for (let i = 0; i < fw && ok; i++) if (!free(x + i, y) || keep[y][x + i] || !free(x + i, y + 1)) ok = false;
+        if (ok && !(free(x - 1, y) || free(x + fw, y))) ok = false;
+        if (ok && (d.npcs.some(n => !n.unseen && n.x >= x - 1 && n.x <= x + fw && n.y >= y - 4 && n.y <= y) || (d.trig || []).some(t => t.x < x + fw + 1 && t.x + t.w > x - 1 && t.y < y + 2 && t.y + t.h > y - 3))) ok = false;
+        if (ok && placed.every(([px, py]) => Math.abs(px - x) + Math.abs(py - y) > 4)) cand.push([x, y]);
+      }
+      if (opt.near) { const nc = cand.filter(([x, y]) => { for (let j = y - 4; j <= y + 4; j++) for (let i = x - 4; i <= x + fw + 3; i++) if (inb(i, j) && g[j][i] === opt.near) return true; return false; }); if (nc.length) cand = nc; }
+    }
     if (!cand.length) continue;
     const [x, y] = cand[Math.floor(rn() * cand.length)]; placed.push([x, y]);
     for (let i = 0; i < fw; i++) g[y][x + i] = '%';
-    d.npcs.push({ id: 'lm_' + spr + placed.length, x: x + (fw - 1) / 2, y, spr, turn: false, noShadow: true, solid: false, big: true, talk: async () => say(N(LM[spr][1][0], LM[spr][1][1])) });
+    d.npcs.push({ id: 'lm_' + spr + placed.length, x: x + (fw - 1) / 2, y, spr, turn: false, noShadow: true, solid: false, big: true, talk: async () => { const t = typeof lm[1] === 'function' ? lm[1]() : lm[1]; if (opt.on) opt.on(); await say(N(t[0], t[1])); } });
   }
 }
 

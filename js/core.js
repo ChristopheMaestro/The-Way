@@ -89,7 +89,7 @@ const Sound = {
       this.timer = setInterval(() => this.tick(), 40);
     }
     if (this.ac.state === 'suspended') this.ac.resume();
-    if (this.want && (!this.track || this.FILES[this.want])) { if (this.FILES[this.want]) this.playFile(this.want); else this.music(this.want); }
+    const w = this.cur || this.want; if (w && (!this.track || this.FILES[w])) { if (this.FILES[w]) this.playFile(w); else this.begin(w); }
   },
   toggle() { this.muted = !this.muted; try { localStorage.setItem('theway_muted', this.muted ? '1' : '0'); } catch (e) {} if (this.gain) this.gain.gain.value = this.muted ? 0 : .5; if (this.audio) this.audio.volume = this.muted ? 0 : .42; },
   tone(f, t, d, type = 'square', v = .15, f2) {
@@ -119,7 +119,7 @@ const Sound = {
   },
   /* real music files (CC0, from OpenGameArt — see music/CREDITS.txt); tracks without a file fall back to the built-in chiptune */
   FILES: { calm: ['music/Map.flac'], town: ['music/Town.flac'], night: ['music/Night.flac'], holy: ['music/Holy.flac'], battle: ['music/Battle.flac'], boss: ['music/Boss.flac'], dark: ['music/Dark.flac'], desert: ['music/Desert.flac'], mini: ['music/Mini.flac'] },
-  TOWNS: /^(bethlehem|house|nazareth|capernaum|nain|jerusalem|temple|well|jericho)$/,
+  TOWNS: /^(bethlehem|house|nazareth|capernaum|nain|jerusalem|jgate|jquarter|jsteps|temple|well|jericho)$/,
   audio: null,
   playFile(n) {
     const arr = this.FILES[n]; if (!arr) return false;
@@ -130,17 +130,31 @@ const Sound = {
     return true;
   },
   stopFile() { if (this.audio) { try { this.audio.pause(); } catch (e) {} this.audio = null; } },
+  /* a piece of music always plays at least MIN_PLAY ms: a request for another track (or a stop) that arrives sooner is held back, and the newest request wins once the time is up */
+  MIN_PLAY: 10000, cur: null, curAt: 0,
   music(n) {
     if (n === 'calm' && typeof W !== 'undefined' && W && this.TOWNS.test(W.mapId || '')) n = 'town';   /* exploring a town uses Town.flac, roads and fields use Map.flac */
     this.want = n;
+    if (this.cur && n !== this.cur && performance.now() - this.curAt < this.MIN_PLAY) return;   // too early to cut: poll() switches later
+    this.begin(n);
+  },
+  begin(n) {
+    this.want = n;
+    if (n !== this.cur) { this.cur = n; this.curAt = performance.now(); }
     if (this.FILES[n]) { this.track = null; if (this.playFile(n)) return; }
     else this.stopFile();
     if (!this.ac) return;
     if (this.track === n) return;
     this.track = n; this.step = 0; this.next = this.ac.currentTime + .08;
   },
-  stop() { this.want = null; this.track = null; this.stopFile(); },
+  stop() { this.want = null; if (!this.cur || performance.now() - this.curAt >= this.MIN_PLAY) this.halt(); },
+  halt() { this.want = null; this.cur = null; this.track = null; this.stopFile(); },
+  poll() {
+    if (!this.cur || performance.now() - this.curAt < this.MIN_PLAY) return;
+    if (!this.want) this.halt(); else if (this.want !== this.cur) this.begin(this.want);
+  },
   tick() {
+    this.poll();
     if (!this.ac || !this.track) return;
     const T = TRACKS[this.track]; if (!T) return; const dur = 60 / T.bpm / 2;
     while (this.next < this.ac.currentTime + .2) {
@@ -319,7 +333,7 @@ const Game = {
     let start = this.stack.length - 1; while (start > 0 && !this.stack[start].opaque) start--;
     ctx.setTransform(2, 0, 0, 2, 0, 0); ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = '#000'; ctx.fillRect(0, 0, SW, SH);
-    for (let i = Math.max(0, start); i < this.stack.length; i++) { ctx.save(); if (!this.stack[i].full) ctx.translate(OX, 0); this.stack[i].draw(); ctx.restore(); }
+    for (let i = Math.max(0, start); i < this.stack.length; i++) { ctx.save(); if (!this.stack[i].full) ctx.translate(OX, 0); try { this.stack[i].draw(); } catch (e) { if (!this._de) { this._de = 1; console.error('DRAW ERROR', e && e.stack || e); } } ctx.restore(); }   // a draw error must never stop the loop
     if (this.ref) { ctx.save(); txt(this.ref, SW - 6, 6, { align: 'right', col: '#ffe97a', shadow: true, maxw: SW - 20 }); ctx.restore(); }
     if (this.fadeA > 0) { ctx.fillStyle = `rgba(${this.fadeCol || '0,0,0'},${this.fadeA})`; ctx.fillRect(0, 0, SW, SH); }
     const top = this.stack[this.stack.length - 1];

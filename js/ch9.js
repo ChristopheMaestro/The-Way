@@ -1,7 +1,7 @@
 'use strict';
 /* ===================== CHAPTER 9 — Hosanna! (Matthew 21-26 · John 12-13) ===================== */
-CHAPTERS.push({ n: 9, t: L('9 · Hosanna!', '9 · Hosanna !'), pts: [] });
-
+/* ===================== CHAPTER 10 — The Garden (Matthew 26 · Luke 22 · John 18) ===================== */
+CHAPTERS.push({ n: 9, t: L('9 · Hosanna!', '9 · Hosanna !'), pts: [] }, { n: 10, t: L('10 · The Garden', '10 · Le jardin'), pts: [] });
 
 foe({ id: 'dovesel', en: 'Dove Seller', fr: 'Vendeur de colombes', hp: 44, atk: 4, exp: 28, gold: 20,
   intro: ['A dove seller tries to sell you a dove. “For the Temple! Certified pure! Premium doves!”', 'Un vendeur de colombes tente de vous en vendre une. « Pour le Temple ! Pure certifiée ! Colombes premium ! »'], check: ['DOVE SELLER — ATK 4 DEF 0. His doves are quite ordinary. His prices are not.', 'VENDEUR DE COLOMBES — ATQ 4 DÉF 0. Ses colombes sont ordinaires. Ses prix, non.'],
@@ -38,7 +38,7 @@ ENEMY.merchantking = {
 };
 /* ---------- chapter 9 ---------- */
 MAPS.olivet = () => fillerMap('olivet', { w: 46, h: 28, theme: 'grove', shape: 'zig', name: ['The Mount of Olives', 'Le mont des Oliviers'], music: 'calm', pool: ['guardsman', 'dovesel', 'tollman'],
-  exits: [{ at: [43, 14], to: 'jerusalem', tx: 3, ty: 14, dir: 'right', cond: () => !!G.flags.palmDone }],
+  exits: [{ at: [43, 14], to: 'jgate', tx: 3, ty: 35, dir: 'right', cond: () => !!G.flags.palmDone }],
   npcs: [{ id: 'colt', x: 17, y: 12, spr: 'donkey', dir: 'right', visible: () => !G.flags.palmDone, talk: async () => say(N('A colt tied by the roadside, which no one has ever ridden. It looks at you with remarkable calm.', 'Un ânon attaché au bord du chemin, que personne n’a jamais monté. Il vous regarde avec un calme remarquable.')) }, ...[[24, 10, 'villager'], [28, 16, 'woman'], [31, 9, 'kid'], [35, 15, 'villagerB']].map(([x, y, s], i) => ({ id: 'pal' + i, x, y, spr: s, wander: true, talk: async () => say(Q('villager', pick(['Palm branches! Cloaks on the road! We’re doing it properly this time!', 'Hosanna! ...What does hosanna mean? I just yell it. It seems right.', 'The Messiah, on a donkey. I like him already.']), pick(['Des palmes ! Des manteaux sur la route ! On fait ça bien cette fois !', 'Hosanna ! ...Ça veut dire quoi, hosanna ? Je le crie, c’est tout. Ça me paraît juste.', 'Le Messie, sur un âne. Je l’aime déjà.']))) })), jar('jar9a', 8, 22, 'bread', 3, 'A jar of festival bread. Pesach is almost here.', 'Une jarre de pain de fête. La Pâque approche.')],
   trig: [{ id: 'palm', x: 15, y: 12, w: 4, h: 4, repeat: true, if: () => !G.flags.palmDone, run: palmScene }] });
 async function palmScene() {
@@ -50,13 +50,6 @@ async function palmScene() {
   await fadeIn(0); G.flags.palmDone = 1; W.removeActor('colt'); W.load('olivet', 20, 13, 'right'); Sound.music('calm'); checkpoint('olivet', 20, 13);
   await say(Q('thomas', 'This is either a triumph or a very good setup for something awful.', 'C’est soit un triomphe, soit une très bonne préparation à quelque chose d’affreux.'), Q('judas', 'The crowd loves him. If only he would… use it. For something.', 'La foule l’adore. Si seulement il voulait... s’en servir. Pour quelque chose.'));
 }
-MAPS.jerusalem = () => fillerMap('jerusalem', { w: 46, h: 30, theme: 'town', shape: 'cross', name: ['Jerusalem', 'Jérusalem'], music: 'calm', pool: ['guardsman', 'dovesel', 'tabletop'], rim2: ['z'], rooms: [[14, 11, 18, 9]],
-  exits: [{ at: [2, 14], to: 'olivet', tx: 41, ty: 14, dir: 'left' }, { at: [43, 14], to: 'temple', tx: 3, ty: 14, dir: 'right' }, { at: [23, 27], to: 'upper', tx: 8, ty: 10, dir: 'up', cond: () => !!G.flags.templeDone }],
-  npcs: [
-    { id: 'phar9', x: 20, y: 14, spr: 'pharisee', dir: 'right', talk: async () => coinScene() },
-    ...[[12, 12, 'villager'], [28, 18, 'woman'], [16, 22, 'merchant'], [32, 12, 'villagerC'], [24, 8, 'kid'], [8, 18, 'villagerB']].map(([x, y, s], i) => ({ id: 'jr' + i, x, y, spr: s, wander: true, talk: async () => say(Q('villager', pick(['Pesach crowds. Every inn is full. My uncle is sleeping in a donkey stall. The donkey did not agree.', 'Did you see the teacher? On the colt? Palm branches! In Jerusalem! The Romans are VERY nervous.', 'The prices! Lambs, doves, bread! ...Why are the prices all so high?']), pick(['La foule de la Pâque. Toutes les auberges sont pleines. Mon oncle dort dans l’étable d’un âne. L’âne n’était pas d’accord.', 'Vous avez vu le maître ? Sur l’ânon ? Des palmes ! À Jérusalem ! Les Romains sont TRÈS nerveux.', 'Les prix ! Agneaux, colombes, pain ! ...Pourquoi les prix sont-ils si élevés ?']))) })),
-    jar('jar9b', 40, 24, 'wine', 1, 'A cellar jar of Passover wine, hidden behind a barrel marked “NOT WINE”.', 'Une jarre de vin de la Pâque, cachée derrière un tonneau marqué « PAS DU VIN ».'), jar('jar9c', 6, 8, 'myrrh', 1, 'A perfumer’s stall. One flask has rolled behind the table. You are a good finder.', 'L’étal d’un parfumeur. Un flacon a roulé derrière la table. Vous avez le nez fin.')
-  ] });
 async function coinScene() {
   if (G.flags.coinDone) return say(Q('pharisee', 'Give to Caesar what is Caesar’s. ...I was trying to catch him out. He left me with a headache and a lesson.', 'Rendez à César ce qui est à César. ...J’essayais de le piéger. Il m’a laissé un mal de tête et une leçon.'));
   await say(Q('pharisee', 'Teacher, we know you are a man of integrity. Tell us: Is it right to pay the imperial tax to Caesar or not?', 'Maître, nous savons que tu es sincère. Dis-nous : est-il permis de payer l’impôt à César, ou non ?'), N('It is a trap. If he says yes, the crowd will be angry. If he says no, Rome will be.', 'C’est un piège. S’il dit oui, la foule sera furieuse. S’il dit non, Rome le sera.'), Q('jesus', 'Show me the coin used for the tax.', 'Montrez-moi la monnaie de l’impôt.'));
@@ -65,17 +58,12 @@ async function coinScene() {
   G.flags.coinDone = 1; G.gold += 15; G.gainExp(26); Sound.sfx('level');
   await say(Q('jesus', 'Then give back to Caesar what is Caesar’s, and to God what is God’s. (Matthew 22:15-22)', 'Alors rendez à César ce qui est à César, et à Dieu ce qui est à Dieu. (Matthieu 22:15-22)'), N('They are amazed, and leave him alone. A passer-by tips you 15 gold for the show.', 'Ils sont stupéfaits et le laissent. Un passant vous donne 15 pièces pour le spectacle.'));
 }
-MAPS.temple = () => fillerMap('temple', { w: 48, h: 30, theme: 'town', shape: 'blob', name: ['The Temple Courtyard', 'La cour du Temple'], music: 'calm', rooms: [[6, 6, 36, 18]], rim2: ['W'], pool: ['dovesel', 'tabletop', 'guardsman'], min: 20, max: 34,
-  exits: [{ at: [2, 14], to: 'jerusalem', tx: 41, ty: 14, dir: 'left' }],
-  npcs: [...[[14, 10, 'merchant'], [22, 12, 'merchant'], [30, 10, 'merchant'], [18, 18, 'villagerC'], [34, 18, 'woman']].map(([x, y, s], i) => ({ id: 'mk' + i, x, y, spr: s, wander: true, visible: () => !G.flags.templeDone, talk: async () => say(Q('merchant', pick(['Doves! Lambs! Honest currency exchange! Honest for a given value of honest!', 'The exchange rate? Fair. The fair is different.']), pick(['Colombes ! Agneaux ! Change honnête ! Honnête dans un certain sens du mot honnête !', 'Le taux de change ? Juste. La foire est différente.']))) })),
-    { id: 'widowM', x: 40, y: 12, spr: 'widow', dir: 'left', visible: () => !!G.flags.templeDone, talk: async () => widowMite() }, jar('jar9d', 8, 24, 'loaf', 2, 'A pilgrim’s basket. “For anyone who needs it. —A friend.”', 'Le panier d’un pèlerin. « Pour qui en a besoin. —Un ami. »')],
-  trig: [{ id: 'cleanse', x: 16, y: 10, w: 6, h: 8, repeat: true, if: () => !G.flags.templeDone, run: templeScene }] });
 async function templeScene() {
-  await W.walk('player', 20, 13, 60);
+  await W.walk('player', 31, 47, 60);
   await say(N('In the Temple courts, Jesus found people selling cattle, sheep and doves, and money changers seated at their tables. The air smells of animals and bargaining.', 'Dans les cours du Temple, Jésus trouva des vendeurs de bœufs, de brebis et de colombes, et des changeurs assis à leurs tables. L’air sent les bêtes et le marchandage.'), Q('peter', '...His face just changed. John, his face just changed.', '...Son visage vient de changer. Jean, son visage vient de changer.'), N('Jesus makes a whip of cords. He drives them all out, with the sheep and the cattle. He scatters the coins and overturns the tables.', 'Jésus fait un fouet avec des cordes. Il les chasse tous, avec les brebis et les bœufs. Il répand les pièces et renverse les tables.'), Q('jesus', 'Get these out of here! Stop turning my Father’s house into a market!', 'Ôtez cela d’ici ! Cessez de faire de la maison de mon Père une maison de trafic !'), Q('andrew', '“Zeal for your house will consume me.” I remember that verse. I did not expect to see it…', '« Le zèle pour ta maison me dévorera. » Je me souviens de ce verset. Je ne m’attendais pas à le voir...'));
   await runBattle(ENEMY.merchantking); G.full(); G.flags.templeDone = 1;
   await say(N('The blind and the lame come to him at the Temple, and he heals them. But the chief priests and the teachers of the law are indignant. (Matthew 21:12-16)', 'Des aveugles et des boiteux viennent à lui dans le Temple, et il les guérit. Mais les principaux sacrificateurs et les scribes s’indignent. (Matthieu 21:12-16)'), Q('judas', 'We could use some of those coins. For the poor. Obviously.', 'On pourrait utiliser ces pièces. Pour les pauvres. Évidemment.'), Q('john', 'Judas. They’re on the floor of the Temple.', 'Judas. Elles sont par terre dans le Temple.'), N('The road south to the upper room is now open. Time for Passover.', 'La route vers le sud, jusqu’à la chambre haute, est désormais ouverte. C’est l’heure de la Pâque.'));
-  checkpoint('temple', 20, 13);
+  checkpoint('temple', 31, 47);
 }
 async function widowMite() {
   if (G.flags.miteDone) return say(Q('widow', 'Two small coins. I think about them every day. And what he said about them.', 'Deux petites pièces. J’y pense tous les jours. Et à ce qu’il en a dit.'));
@@ -83,7 +71,7 @@ async function widowMite() {
   G.flags.miteDone = 1; G.healAll(999); G.gainExp(20); Sound.sfx('level');
   await say(Q('widow', 'Oh. Oh my. I... didn’t think anyone was looking.', 'Oh. Oh mon Dieu. Je... ne pensais pas que quelqu’un regardait.'), N('The party is fully healed.', 'L’équipe est complètement soignée.'));
 }
-MAPS.upper = () => { const m = SB(18, 14, 'upper'); m.room(2, 2, 14, 10, '_'); m.rect('c', 5, 5, 8, 3); m.finish(['#', '#', 'W'], null); m.set(9, 12, 'd'); return { id: 'upper', shaped: true, name: L('The Upper Room', 'La chambre haute'), w: m.w, h: m.h, g: m.g, music: 'holy', tint: 'rgba(255,200,100,.08)', npcs: [], trig: [{ id: 'supper', x: 6, y: 8, w: 6, h: 3, repeat: true, if: () => !G.flags.supperDone, run: supperScene }, exitTrig(8, 11, 3, 1, 'jerusalem', 23, 25, 'up', () => !!G.flags.supperDone)] }; };
+MAPS.upper = () => { const m = SB(18, 14, 'upper'); m.room(2, 2, 14, 10, '_'); m.rect('c', 5, 5, 8, 3); m.finish(['#', '#', 'W'], null); m.set(9, 12, 'd'); return { id: 'upper', shaped: true, name: L('The Upper Room', 'La chambre haute'), w: m.w, h: m.h, g: m.g, music: 'holy', tint: 'rgba(255,200,100,.08)', npcs: [], trig: [{ id: 'supper', x: 6, y: 8, w: 6, h: 3, repeat: true, if: () => !G.flags.supperDone, run: supperScene }, exitTrig(8, 11, 3, 1, 'jquarter', 48, 38, 'up', () => !!G.flags.supperDone)] }; };
 async function supperScene() {
   await W.walk('player', 9, 9, 60);
   await say(N('It is the evening of the Passover meal. In a large upper room, furnished and ready, Jesus sits at table with the Twelve.', 'C’est le soir du repas de la Pâque. Dans une grande chambre haute, meublée et prête, Jésus est à table avec les Douze.'), Q('jesus', 'I have eagerly desired to eat this Passover with you before I suffer.', 'J’ai désiré d’un grand désir manger cette Pâque avec vous avant de souffrir.'));
@@ -111,7 +99,10 @@ async function startChapter9() {
   W.load('olivet', 3, 15, 'right'); await fadeIn(600); checkpoint('olivet', 3, 15);
 }
 XJ(9, 'ch9', 13, 'Start (Mount of Olives)', 'Début (mont des Oliviers)', () => { chapterParty(); G.join('thomas'); G.join('judas'); G.join('magdalene'); startChapter9(); });
-XJ(9, 'jerusalem', 13, 'Jerusalem', 'Jérusalem', () => { chapterParty(); G.join('thomas'); G.join('judas'); G.chapter = 9; G.flags.palmDone = 1; W.load('jerusalem', 3, 14, 'right'); });
-XJ(9, 'temple', 13, 'The Temple', 'Le Temple', () => { chapterParty(); G.join('thomas'); G.join('judas'); G.chapter = 9; G.flags.palmDone = 1; W.load('temple', 3, 14, 'right'); });
-XJ(9, 'merchantking', 14, 'Boss: Market Lord', 'Boss : Seigneur du marché', async () => { chapterParty(); G.chapter = 9; W.load('temple', 20, 13, 'right'); await runBattle(ENEMY.merchantking); });
+XJ(9, 'jgate', 13, 'The Sheep Gate', 'La porte des Brebis', () => { chapterParty(); G.join('thomas'); G.join('judas'); G.chapter = 9; G.flags.palmDone = 1; W.load('jgate', 3, 35, 'right'); });
+XJ(9, 'jerusalem', 13, 'Jerusalem: the market', 'Jérusalem : le marché', () => { chapterParty(); G.join('thomas'); G.join('judas'); G.chapter = 9; G.flags.palmDone = 1; W.load('jerusalem', 31, 38, 'up'); });
+XJ(9, 'jquarter', 13, 'The Upper City', 'La Ville haute', () => { chapterParty(); G.join('thomas'); G.join('judas'); G.chapter = 9; G.flags.palmDone = 1; W.load('jquarter', 53, 20, 'left'); });
+XJ(9, 'jsteps', 13, 'The Temple steps', 'Les marches du Temple', () => { chapterParty(); G.join('thomas'); G.join('judas'); G.chapter = 9; G.flags.palmDone = 1; W.load('jsteps', 3, 26, 'right'); });
+XJ(9, 'temple', 13, 'The Temple', 'Le Temple', () => { chapterParty(); G.join('thomas'); G.join('judas'); G.chapter = 9; G.flags.palmDone = 1; W.load('temple', 31, 56, 'up'); });
+XJ(9, 'merchantking', 14, 'Boss: Market Lord', 'Boss : Seigneur du marché', async () => { chapterParty(); G.chapter = 9; W.load('temple', 31, 47, 'up'); await runBattle(ENEMY.merchantking); });
 XJ(9, 'upper', 14, 'The Upper Room', 'La chambre haute', () => { chapterParty(); G.join('thomas'); G.join('judas'); G.chapter = 9; G.flags.palmDone = G.flags.templeDone = 1; W.load('upper', 9, 10, 'up'); });

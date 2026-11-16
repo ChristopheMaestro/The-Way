@@ -18,6 +18,9 @@ const Spr = (() => {
     for (let y = -ry; y <= ry; y++) { const w = Math.round(rx * Math.sqrt(1 - (y * y) / (ry * ry + .01))); g.fillRect(cx - w, cy + y, w * 2 + 1, 1); }
   }
 
+  /* clear an ellipse (to cut an arch out of a sprite) and lay courses of cut stone */
+  const C0 = (g, cx, cy, rx, ry) => { for (let y = -ry; y <= ry; y++) { const w = Math.round(rx * Math.sqrt(1 - (y * y) / (ry * ry + .01))); g.clearRect(cx - w, cy + y, w * 2 + 1, 1); } };
+  const ASH = (g, x, y, w, h, a = '#c9bea2', b = '#ada184', c = '#ddd3b8') => { R(g, x, y, w, h, a); for (let j = 0; j < h; j += 6) { R(g, x, y + j, w, 1, b); if (j + 1 < h) R(g, x, y + j + 1, w, 1, c); const o = (j / 6 % 2) * 6; for (let i = o; i < w; i += 12) R(g, x + i, y + j, 1, Math.min(6, h - j), b); } };
   /* ---------- people ---------- */
   const CHARS = {
     joseph: { robe: '#9b7440', trim: '#5a3f1f', skin: '#d9a273', hair: '#3b2a1a', head: 'hair', beard: true },
@@ -344,6 +347,154 @@ const Spr = (() => {
       case 'bigrock': c = mkc(40, 30); g = c.getContext('2d');   // a cluster of boulders
         E(g, 14, 20, 13, 9, '#7a7466'); E(g, 28, 22, 10, 7, '#8a8476'); E(g, 20, 14, 10, 8, '#938c7c'); E(g, 12, 16, 5, 4, '#a8a292'); E(g, 18, 9, 4, 3, '#b4ae9e'); E(g, 30, 18, 3, 2, '#a8a292');
         R(g, 6, 26, 30, 3, '#5a5448'); R(g, 20, 14, 1, 8, '#6a6458'); R(g, 10, 22, 8, 1, '#6a6458'); R(g, 26, 24, 7, 1, '#6a6458'); R(g, 4, 28, 3, 1, '#6a7a4a'); R(g, 33, 27, 3, 1, '#6a7a4a'); break;
+      /* ---- story landmarks (see LM in styles.js) ---- */
+      case 'sycamore': c = mkc(50, 64); g = c.getContext('2d');   // the sycamore Zacchaeus climbed: a low bough, and a tiny man on it
+        R(g, 19, 34, 12, 30, '#6a5238'); R(g, 15, 58, 6, 6, '#6a5238'); R(g, 29, 59, 7, 5, '#6a5238'); R(g, 19, 34, 3, 30, '#86684a'); R(g, 28, 36, 3, 28, '#4c3826'); R(g, 24, 46, 2, 9, '#33241a');
+        R(g, 3, 32, 18, 4, '#6a5238'); R(g, 3, 32, 18, 1, '#86684a'); R(g, 4, 28, 3, 5, '#6a5238'); R(g, 29, 26, 14, 4, '#6a5238'); R(g, 42, 22, 4, 5, '#6a5238');
+        E(g, 25, 18, 24, 15, '#3f6a30'); E(g, 13, 20, 12, 10, '#4f7c3a'); E(g, 36, 19, 12, 11, '#4f7c3a'); E(g, 25, 9, 14, 7, '#5c8c44'); E(g, 14, 13, 7, 4, '#76a458'); E(g, 35, 12, 7, 4, '#76a458'); E(g, 25, 5, 6, 3, '#90bc6c');
+        for (let i = 0; i < 10; i++) R(g, 4 + (i * 13) % 40, 14 + (i * 7) % 20, 3, 1, '#2c4c22');
+        for (const [x, y] of [[9, 24], [40, 26], [22, 28], [30, 22]]) { R(g, x, y, 2, 2, '#c8a050'); R(g, x, y, 1, 1, '#e8c878'); }
+        R(g, 8, 22, 5, 6, '#8a3a3a'); R(g, 9, 18, 3, 4, '#d9a273'); R(g, 9, 17, 3, 1, '#4a2e14'); R(g, 7, 24, 1, 3, '#d9a273'); R(g, 13, 24, 1, 3, '#d9a273'); R(g, 9, 28, 1, 2, '#d9a273'); R(g, 11, 28, 1, 2, '#d9a273'); break;
+      case 'jars6': { c = mkc(44, 28); g = c.getContext('2d');   // the six stone water jars of Cana
+        const jar = (x, y, w, h) => { E(g, x + w / 2 | 0, y + h / 2 | 0, w / 2 | 0, h / 2 | 0, '#9a9486'); E(g, x + w / 2 - 1 | 0, y + h / 2 - 1 | 0, (w / 2 | 0) - 2, (h / 2 | 0) - 2, '#aaa496'); R(g, x + 2, y, w - 4, 2, '#7a7466'); R(g, x + 3, y, w - 6, 1, '#5a5448'); R(g, x + w - 3, y + 4, 2, h - 8, '#7a7466'); R(g, x + 2, y + 3, 1, 4, '#c8c2b2'); };
+        jar(2, 4, 11, 15); jar(16, 2, 11, 15); jar(30, 4, 11, 15); jar(6, 11, 12, 16); jar(21, 12, 12, 16); jar(33, 12, 9, 15);
+        R(g, 3, 27, 38, 1, '#3a362e'); R(g, 25, 13, 3, 2, '#6a3a7a'); R(g, 24, 14, 5, 1, '#8a4a9a'); for (const x of [10, 26]) R(g, x, 0, 1, 2, '#7a9ad8'); break; }
+      case 'taxbooth': c = mkc(48, 44); g = c.getContext('2d');   // Matthew's tax booth: awning, coins, scales, ledger
+        R(g, 3, 10, 3, 34, '#5a3818'); R(g, 41, 10, 3, 34, '#5a3818'); R(g, 3, 10, 1, 34, '#7a5430');
+        for (let i = 0; i < 8; i++) R(g, i * 6, 2, 6, 10, i % 2 ? '#e8dcc0' : '#a03a3a'); R(g, 0, 2, 48, 1, '#f8f0dc'); R(g, 0, 11, 48, 1, '#7a2a2a');
+        for (let i = 0; i < 8; i++) R(g, i * 6, 12, 6, 2, i % 2 ? '#d0c4a4' : '#8a2a2a');
+        R(g, 6, 28, 36, 5, '#8a5a2a'); R(g, 6, 28, 36, 1, '#a8743c'); R(g, 6, 33, 36, 1, '#5a3a18'); R(g, 9, 34, 3, 10, '#5a3818'); R(g, 36, 34, 3, 10, '#5a3818');
+        for (let i = 0; i < 4; i++) R(g, 10, 26 - i * 2, 6, 2, i % 2 ? '#e8c040' : '#c8a030'); for (let i = 0; i < 3; i++) R(g, 19, 26 - i * 2, 6, 2, '#c0c0c8');
+        R(g, 29, 22, 10, 6, '#e8dcc0'); R(g, 29, 22, 10, 1, '#fff'); R(g, 33, 22, 1, 6, '#8a7a5a'); R(g, 31, 24, 2, 1, '#6a5a3a'); R(g, 35, 25, 3, 1, '#6a5a3a');
+        R(g, 41, 16, 6, 4, '#6a4a2a'); R(g, 42, 15, 4, 1, '#8a6a40'); R(g, 22, 14, 1, 8, '#6a6a70'); R(g, 16, 20, 14, 1, '#6a6a70'); R(g, 15, 21, 3, 2, '#c0c0c8'); R(g, 28, 21, 3, 2, '#c0c0c8'); break;
+      case 'mustard': c = mkc(46, 48); g = c.getContext('2d');   // the mustard tree of the parable: yellow blossom, birds in the branches
+        R(g, 20, 30, 5, 18, '#6a5238'); R(g, 20, 30, 1, 18, '#86684a'); R(g, 16, 26, 5, 3, '#6a5238'); R(g, 26, 24, 5, 3, '#6a5238'); R(g, 17, 44, 3, 4, '#6a5238'); R(g, 25, 45, 3, 3, '#6a5238');
+        E(g, 23, 18, 22, 16, '#4a7a34'); E(g, 11, 22, 11, 9, '#5a8c40'); E(g, 35, 21, 10, 9, '#5a8c40'); E(g, 23, 9, 13, 7, '#6a9c4c'); E(g, 13, 13, 6, 4, '#84b45c'); E(g, 34, 12, 6, 4, '#84b45c');
+        for (const [x, y] of [[8, 18], [16, 10], [26, 8], [34, 14], [38, 22], [22, 16], [12, 27], [30, 26], [24, 22], [4, 22]]) { R(g, x, y, 2, 2, '#f0d030'); R(g, x, y, 1, 1, '#fff080'); }
+        for (const [x, y] of [[10, 12], [30, 7], [36, 19]]) { R(g, x, y, 4, 2, '#6a5a48'); R(g, x + 3, y - 1, 2, 2, '#6a5a48'); R(g, x + 4, y, 1, 1, '#e8a030'); R(g, x, y + 2, 1, 1, '#3a2a1a'); }
+        R(g, 2, 45, 2, 3, '#6a7a4a'); R(g, 40, 46, 3, 2, '#6a7a4a'); break;
+      case 'preach': c = mkc(50, 34); g = c.getContext('2d');   // the preaching rock: a flat seat, natural steps, a cloak left on it
+        E(g, 25, 26, 24, 7, '#6e685a'); E(g, 25, 22, 21, 7, '#8a8476'); R(g, 10, 12, 30, 12, '#938c7c'); R(g, 12, 10, 26, 4, '#a8a292'); R(g, 12, 10, 26, 1, '#c4beae'); R(g, 10, 22, 30, 3, '#6e685a');
+        R(g, 4, 22, 10, 6, '#8a8476'); R(g, 0, 26, 12, 4, '#7a7466'); R(g, 36, 22, 12, 6, '#8a8476'); R(g, 40, 26, 10, 4, '#7a7466'); R(g, 22, 11, 6, 2, '#e8dcc0'); R(g, 23, 10, 4, 1, '#f8f0dc');
+        R(g, 18, 16, 1, 6, '#6a6458'); R(g, 30, 14, 1, 8, '#6a6458'); R(g, 24, 18, 6, 1, '#6a6458');
+        for (const [x, y, c2] of [[3, 29, '#e8e040'], [9, 30, '#fff'], [44, 29, '#d85a8a'], [47, 28, '#fff'], [14, 8, '#fff'], [36, 9, '#e8e040']]) R(g, x, y, 2, 2, c2);
+        R(g, 0, 31, 50, 2, '#4a7a3a'); R(g, 6, 30, 3, 2, '#6a9a50'); R(g, 42, 31, 4, 2, '#6a9a50'); break;
+      case 'barrenfig': { c = mkc(44, 54); g = c.getContext('2d');   // the barren fig tree: bare, grey, a few dry leaves
+        R(g, 17, 28, 10, 26, '#7a6a5a'); R(g, 13, 48, 6, 6, '#7a6a5a'); R(g, 26, 49, 7, 5, '#7a6a5a'); R(g, 17, 28, 3, 26, '#968674'); R(g, 24, 30, 3, 24, '#5a4a3c'); R(g, 21, 38, 2, 10, '#2e241c');
+        const br = (x, y, w, h) => { R(g, x, y, w, h, '#7a6a5a'); R(g, x, y, w, 1, '#968674'); };
+        br(8, 24, 10, 3); br(4, 20, 5, 3); br(2, 14, 3, 7); br(1, 10, 2, 5); br(6, 16, 3, 3); br(10, 12, 3, 12); br(11, 6, 2, 7); br(26, 22, 11, 3); br(36, 17, 3, 6); br(38, 11, 2, 7); br(30, 12, 3, 11); br(31, 5, 2, 8); br(22, 8, 3, 20); br(21, 2, 2, 7); br(24, 12, 5, 2); br(14, 18, 3, 7); br(18, 12, 3, 16);
+        for (const [x, y] of [[3, 12], [9, 10], [22, 4], [36, 10], [39, 15], [14, 16], [30, 10], [6, 19]]) R(g, x, y, 2, 2, '#8a6a2a');
+        R(g, 15, 53, 14, 1, '#4a3e30'); R(g, 8, 52, 4, 1, '#8a7a4a'); R(g, 32, 52, 4, 1, '#8a7a4a'); R(g, 19, 50, 1, 2, '#d8d0b8'); break; }
+      case 'oilpress': c = mkc(46, 34); g = c.getContext('2d');   // the oil press of Gethsemane: basin, millstone, beam, counterweight, jar
+        E(g, 15, 26, 13, 6, '#8a8476'); E(g, 15, 23, 12, 5, '#a8a292'); E(g, 15, 23, 8, 3, '#6a6458'); E(g, 15, 14, 8, 10, '#938c7c'); E(g, 13, 13, 3, 6, '#b4ae9e'); R(g, 8, 6, 16, 2, '#7a7466');
+        R(g, 14, 0, 3, 12, '#5a3818'); R(g, 14, 0, 1, 12, '#7a5430'); R(g, 14, 4, 30, 4, '#7a5028'); R(g, 14, 4, 30, 1, '#9a6a38'); R(g, 14, 7, 30, 1, '#4a2e14');
+        R(g, 39, 8, 5, 8, '#6a6458'); R(g, 38, 16, 7, 2, '#5a5448'); R(g, 39, 8, 5, 1, '#8a847a'); R(g, 34, 20, 10, 10, '#b06a40'); E(g, 39, 20, 5, 2, '#b06a40'); R(g, 35, 22, 1, 6, '#d08a58'); R(g, 36, 19, 6, 1, '#7a4a2a');
+        R(g, 28, 24, 6, 6, '#c09050'); R(g, 28, 24, 6, 1, '#d8a868'); R(g, 29, 22, 2, 2, '#3a4a2a'); R(g, 32, 23, 2, 1, '#2a3a1a'); R(g, 2, 31, 40, 2, '#4a4438'); R(g, 30, 30, 3, 3, '#3a4a2a'); break;
+      case 'rooster': c = mkc(22, 46); g = c.getContext('2d');   // the rooster pillar of Peter's denial
+        R(g, 6, 18, 10, 28, '#8a8476'); R(g, 6, 18, 2, 28, '#a8a292'); R(g, 14, 20, 2, 26, '#6a6458'); R(g, 4, 16, 14, 3, '#a8a292'); R(g, 4, 16, 14, 1, '#c4beae'); R(g, 4, 44, 14, 2, '#6a6458'); R(g, 10, 26, 1, 6, '#5a5448');
+        R(g, 6, 8, 10, 8, '#c8702a'); R(g, 6, 8, 10, 2, '#e0903a'); R(g, 3, 6, 4, 8, '#3a5a3a'); R(g, 2, 4, 3, 6, '#2a4a8a'); R(g, 1, 3, 2, 4, '#2a4a8a'); R(g, 4, 3, 2, 4, '#3a7a4a');
+        R(g, 13, 2, 5, 7, '#c8702a'); R(g, 14, 0, 3, 3, '#d02a2a'); R(g, 13, 1, 1, 2, '#d02a2a'); R(g, 18, 4, 3, 2, '#f0c030'); R(g, 15, 4, 1, 1, '#000'); R(g, 16, 8, 2, 3, '#d02a2a');
+        R(g, 8, 10, 6, 4, '#a85a20'); R(g, 9, 16, 1, 2, '#e0a030'); R(g, 12, 16, 1, 2, '#e0a030'); break;
+      case 'tomb': c = mkc(50, 40); g = c.getContext('2d');   // a rock-cut tomb, the round stone rolled aside
+        R(g, 0, 8, 50, 32, '#8a7e6a'); R(g, 0, 8, 50, 3, '#a89c86'); R(g, 0, 0, 50, 10, '#7a6e5a'); R(g, 3, 0, 44, 6, '#6a604e'); R(g, 0, 34, 50, 6, '#6a604e');
+        for (let i = 0; i < 7; i++) { R(g, 2 + i * 7, 12 + (i * 5) % 9, 5, 1, '#6a604e'); R(g, 5 + i * 6, 22 + (i * 3) % 8, 4, 1, '#6a604e'); }
+        R(g, 16, 12, 18, 28, '#0a0806'); R(g, 18, 10, 14, 3, '#0a0806'); R(g, 20, 8, 10, 3, '#0a0806'); R(g, 14, 13, 2, 27, '#6a604e'); R(g, 34, 13, 2, 27, '#6a604e');
+        R(g, 20, 22, 10, 16, '#2a2420'); R(g, 22, 24, 6, 14, '#4a4036'); R(g, 23, 26, 4, 6, '#d8d0c0');
+        E(g, 41, 31, 8, 8, '#9a9484'); E(g, 41, 31, 6, 6, '#aaa494'); E(g, 38, 28, 3, 3, '#c0baa8'); R(g, 34, 31, 14, 1, '#6a6458');
+        R(g, 4, 36, 6, 2, '#4a7a3a'); R(g, 6, 34, 2, 3, '#fff'); R(g, 4, 35, 2, 2, '#fff'); R(g, 43, 38, 5, 2, '#4a7a3a'); R(g, 45, 36, 2, 3, '#fff'); break;
+      case 'well': c = mkc(34, 34); g = c.getContext('2d');   // a village well
+        R(g, 3, 0, 3, 24, '#5a3818'); R(g, 28, 0, 3, 24, '#5a3818'); R(g, 3, 0, 1, 24, '#7a5430'); R(g, 1, 0, 32, 4, '#7a5028'); R(g, 1, 0, 32, 1, '#9a6a38');
+        R(g, 16, 4, 1, 10, '#c8b890'); R(g, 13, 14, 7, 6, '#8a5a2a'); R(g, 13, 14, 7, 1, '#a8743c'); R(g, 13, 18, 7, 1, '#5a3a18');
+        E(g, 17, 26, 15, 6, '#7a7466'); R(g, 2, 18, 30, 10, '#938c7c'); E(g, 17, 18, 15, 5, '#a8a292'); E(g, 17, 18, 11, 3, '#14181c'); E(g, 17, 19, 8, 2, '#2a4a6a');
+        for (let i = 0; i < 5; i++) { R(g, 3 + i * 6, 22, 5, 1, '#6a6458'); R(g, 6 + i * 6, 25, 4, 1, '#6a6458'); }
+        R(g, 2, 28, 30, 1, '#4a4438'); R(g, 0, 30, 5, 2, '#6a8a4a'); R(g, 29, 31, 4, 2, '#6a8a4a'); break;
+      case 'netrack': c = mkc(50, 34); g = c.getContext('2d');   // fishing nets drying on a rack
+        R(g, 3, 2, 3, 32, '#5a3818'); R(g, 44, 2, 3, 32, '#5a3818'); R(g, 3, 2, 1, 32, '#7a5430'); R(g, 2, 2, 46, 3, '#7a5028'); R(g, 2, 2, 46, 1, '#9a6a38'); R(g, 24, 2, 2, 6, '#5a3818');
+        for (let x = 6; x < 44; x++) { const sag = Math.round(Math.sin((x - 6) / 38 * Math.PI) * 8) + 8; for (let y = 4; y < 4 + sag; y++) if ((x + y) % 3 === 0 || (x - y + 99) % 3 === 0) R(g, x, y, 1, 1, '#b8a878'); R(g, x, 3, 1, 1, '#d8cc9c'); }
+        for (let x = 8; x < 42; x += 4) R(g, x, 4 + Math.round(Math.sin((x - 6) / 38 * Math.PI) * 8) + 8, 2, 2, '#c8442a');
+        R(g, 8, 26, 14, 7, '#b89050'); R(g, 8, 26, 14, 1, '#d0a860'); for (let x = 9; x < 22; x += 2) R(g, x, 27, 1, 6, '#9a7438'); R(g, 10, 24, 4, 3, '#a8b8c8'); R(g, 13, 23, 5, 3, '#8aa0b8'); R(g, 17, 24, 3, 2, '#a8b8c8');
+        R(g, 32, 27, 12, 3, '#7a5028'); R(g, 34, 30, 2, 3, '#5a3818'); R(g, 41, 30, 2, 3, '#5a3818'); break;
+      case 'fold': { c = mkc(54, 30); g = c.getContext('2d');   // a sheepfold: stone pen, thorn brush, a gate gap, sheep over the wall
+        const wall = (x, y, w, h) => { R(g, x, y, w, h, '#8a8476'); R(g, x, y, w, 1, '#a8a292'); R(g, x, y + h - 1, w, 1, '#5a5448'); for (let i = 0; i < w; i += 5) R(g, x + i, y + 2, 1, h - 3, '#6a6458'); };
+        wall(1, 8, 20, 9); wall(32, 8, 21, 9); wall(1, 20, 52, 8); R(g, 0, 6, 2, 22, '#8a8476'); R(g, 52, 6, 2, 22, '#8a8476');
+        for (let x = 2; x < 20; x += 3) { R(g, x, 5 + (x % 2), 1, 3, '#4a6a3a'); R(g, x + 1, 4, 1, 2, '#6a4a2a'); } for (let x = 33; x < 52; x += 3) { R(g, x, 5 + (x % 2), 1, 3, '#4a6a3a'); R(g, x + 1, 4, 1, 2, '#6a4a2a'); }
+        R(g, 22, 6, 2, 12, '#5a3818'); R(g, 30, 6, 2, 12, '#5a3818'); R(g, 22, 6, 10, 1, '#7a5028');
+        for (const [x, y] of [[8, 12], [16, 14], [38, 13], [46, 12], [27, 12], [11, 22]]) { E(g, x + 2, y + 2, 3, 2, '#f0ece0'); R(g, x + 4, y + 1, 2, 2, '#2a2018'); R(g, x, y + 4, 1, 2, '#3a3028'); R(g, x + 3, y + 4, 1, 2, '#3a3028'); } break; }
+      case 'watchtower': c = mkc(32, 56); g = c.getContext('2d');   // a vineyard watchtower
+        R(g, 6, 22, 20, 34, '#8a8070'); R(g, 6, 22, 3, 34, '#a89c86'); R(g, 23, 22, 3, 34, '#6a604e');
+        for (let y = 26; y < 56; y += 6) { R(g, 6, y, 20, 1, '#6a604e'); R(g, y % 12 ? 9 : 15, y + 1, 1, 5, '#6a604e'); }
+        R(g, 13, 44, 6, 12, '#14100c'); R(g, 12, 43, 8, 2, '#14100c'); R(g, 3, 18, 26, 5, '#7a5028'); R(g, 3, 18, 26, 1, '#9a6a38'); R(g, 3, 22, 26, 1, '#4a2e14');
+        R(g, 5, 6, 3, 13, '#5a3818'); R(g, 24, 6, 3, 13, '#5a3818'); R(g, 4, 4, 24, 4, '#b89050'); R(g, 4, 4, 24, 1, '#d0a860'); R(g, 6, 2, 20, 3, '#a8803c'); R(g, 10, 0, 12, 3, '#8a6a2c');
+        R(g, 8, 10, 16, 1, '#5a3818'); R(g, 9, 14, 14, 3, '#14100c'); R(g, 11, 13, 2, 2, '#f0d070'); R(g, 27, 24, 2, 32, '#5a3818'); for (let y = 28; y < 56; y += 5) { R(g, 25, y, 2, 1, '#5a3818'); R(g, 29, y + 2, 2, 1, '#5a3818'); }
+        for (const x of [0, 28]) for (let y = 46; y < 56; y += 3) { R(g, x, y, 2, 2, '#3a6a2a'); R(g, x + 1, y - 1, 2, 2, '#4a7a34'); }
+        R(g, 1, 50, 3, 3, '#6a2a6a'); R(g, 3, 53, 2, 2, '#7a3a7a'); R(g, 29, 48, 2, 3, '#6a2a6a'); break;
+      /* ---- Jerusalem and the Temple (ch.9, see jerusalem.js) ---- */
+      case 'gatearch': c = mkc(128, 80); g = c.getContext('2d');   // a city gate: two ashlar towers and a round arch (the opening is see-through)
+        for (const x0 of [0, 96]) {
+          ASH(g, x0, 10, 32, 70); R(g, x0 - 1, 6, 34, 5, '#a89c80'); R(g, x0 - 1, 6, 34, 1, '#d4c9ae'); R(g, x0 + 24, 10, 8, 70, 'rgba(0,0,0,.14)'); R(g, x0, 10, 3, 70, 'rgba(255,255,255,.14)');
+          for (let i = 0; i < 4; i++) { R(g, x0 + 1 + i * 8, 1, 6, 6, '#b8ac90'); R(g, x0 + 1 + i * 8, 1, 6, 1, '#e0d6bc'); }
+          for (const y of [22, 44]) { R(g, x0 + 13, y, 6, 12, '#1e1810'); R(g, x0 + 12, y - 1, 8, 1, '#8a7e64'); }
+        }
+        ASH(g, 32, 16, 64, 64); R(g, 30, 12, 68, 5, '#a89c80'); R(g, 30, 12, 68, 1, '#d4c9ae');
+        for (let i = 0; i < 7; i++) { R(g, 33 + i * 9, 6, 6, 7, '#b8ac90'); R(g, 33 + i * 9, 6, 6, 1, '#e0d6bc'); }
+        E(g, 64, 46, 27, 18, '#e2d8bc'); R(g, 37, 46, 54, 34, '#e2d8bc'); C0(g, 64, 46, 24, 15); g.clearRect(40, 46, 48, 34);
+        R(g, 60, 26, 8, 7, '#f0e8d0'); R(g, 60, 26, 8, 1, '#fff'); R(g, 63, 28, 2, 3, '#a88020');
+        for (const x0 of [33, 89]) { R(g, x0, 38, 6, 42, '#6a4423'); R(g, x0, 38, 1, 42, '#8a6038'); for (const y of [46, 58, 70]) R(g, x0, y, 6, 1, '#2a2a30'); }
+        for (const x0 of [44, 75]) { R(g, x0, 20, 9, 16, '#7a2a6a'); R(g, x0, 20, 9, 1, '#d8b040'); R(g, x0, 36, 9, 1, '#d8b040'); for (const x of [1, 3, 5, 7]) R(g, x0 + x, 37, 1, 2, '#d8b040'); }
+        break;
+      case 'tower': c = mkc(32, 72); g = c.getContext('2d');   // one of Herod's three great towers (Hippicus, Phasael, Mariamne)
+        ASH(g, 3, 16, 26, 56); R(g, 0, 10, 32, 6, '#a89c80'); R(g, 0, 10, 32, 1, '#d4c9ae'); R(g, 26, 16, 3, 56, 'rgba(0,0,0,.18)'); R(g, 3, 16, 3, 56, 'rgba(255,255,255,.14)');
+        for (let i = 0; i < 4; i++) { R(g, 1 + i * 8, 3, 6, 8, '#b8ac90'); R(g, 1 + i * 8, 3, 6, 1, '#e0d6bc'); }
+        R(g, 14, 26, 4, 10, '#1e1810'); R(g, 14, 46, 4, 10, '#1e1810'); R(g, 12, 62, 8, 10, '#14100c'); R(g, 15, 0, 1, 4, '#5a3a1c'); R(g, 16, 0, 5, 3, '#a02a2a'); break;
+      case 'antonia': c = mkc(56, 80); g = c.getContext('2d');   // the Antonia fortress: Roman garrison over the Temple courts
+        ASH(g, 0, 28, 56, 52, '#b8ad92'); R(g, 0, 22, 56, 6, '#9a8e74'); R(g, 0, 22, 56, 1, '#c8bda2');
+        for (const x0 of [0, 42]) { ASH(g, x0, 8, 14, 72, '#b8ad92'); R(g, x0 - 1, 4, 16, 5, '#9a8e74'); for (let i = 0; i < 2; i++) { R(g, x0 + i * 8, 0, 5, 5, '#a89c80'); R(g, x0 + i * 8, 0, 5, 1, '#d4c9ae'); } R(g, x0 + 5, 24, 4, 10, '#1e1810'); R(g, x0 + 5, 48, 4, 10, '#1e1810'); }
+        for (let i = 0; i < 4; i++) { R(g, 16 + i * 8, 18, 5, 5, '#a89c80'); R(g, 16 + i * 8, 18, 5, 1, '#d4c9ae'); }
+        R(g, 22, 54, 12, 26, '#14100c'); E(g, 28, 54, 6, 5, '#14100c'); for (let x = 23; x < 34; x += 3) R(g, x, 52, 1, 28, '#4a4a50'); R(g, 22, 62, 12, 1, '#4a4a50'); R(g, 22, 72, 12, 1, '#4a4a50');
+        R(g, 27, 2, 2, 20, '#5a3a1c'); R(g, 29, 4, 13, 9, '#a02a2a'); R(g, 29, 4, 13, 1, '#d84a4a'); R(g, 33, 6, 5, 4, '#e8c030'); break;
+      case 'sanctuary': c = mkc(128, 112); g = c.getContext('2d');   // the Sanctuary: white marble and gold, the veil in the doorway, the golden vine over the door
+        R(g, 6, 16, 116, 96, '#f2ede0'); R(g, 6, 16, 116, 2, '#fff'); R(g, 6, 16, 3, 96, '#fffaee'); R(g, 119, 16, 3, 96, '#d8d0bc');
+        for (let y = 34; y < 112; y += 18) R(g, 6, y, 116, 1, '#dcd5c0'); for (let x = 20; x < 122; x += 14) R(g, x, 18, 1, 94, '#e8e1d1');
+        R(g, 0, 64, 22, 48, '#e6dfcf'); R(g, 106, 64, 22, 48, '#e6dfcf'); R(g, 0, 64, 22, 2, '#fff'); R(g, 106, 64, 22, 2, '#fff');
+        for (let k = 0; k < 3; k++) for (const x of [6, 112]) { R(g, x, 72 + k * 12, 10, 6, '#8a8070'); R(g, x + 1, 73 + k * 12, 8, 4, '#3a3428'); }
+        R(g, 2, 12, 124, 5, '#d8b040'); R(g, 2, 12, 124, 1, '#f8e078'); R(g, 2, 16, 124, 1, '#a88020');
+        for (let x = 4; x < 124; x += 4) { R(g, x, 4, 1, 8, '#f0d060'); R(g, x, 3, 1, 1, '#fff6b0'); }
+        for (const x of [14, 108]) { R(g, x, 22, 6, 10, '#7a7060'); R(g, x + 1, 23, 4, 8, '#2a2418'); }
+        R(g, 34, 30, 6, 82, '#d8b040'); R(g, 34, 30, 2, 82, '#f8e078'); R(g, 88, 30, 6, 82, '#d8b040'); R(g, 92, 30, 2, 82, '#a88020');
+        R(g, 42, 40, 44, 72, '#d8b040'); R(g, 44, 42, 40, 70, '#2a2420');
+        { const cols = ['#2a4a9a', '#6a2a7a', '#b02a2a', '#f0ece0']; for (let x = 44; x < 84; x += 4) R(g, x, 44, 4, 68, cols[((x - 44) / 4 | 0) % 4]); }
+        R(g, 44, 44, 40, 5, 'rgba(0,0,0,.28)'); R(g, 44, 44, 40, 2, '#e8c040'); for (const x of [51, 63, 75]) { R(g, x, 70, 5, 5, '#e8c040'); R(g, x + 1, 66, 3, 5, '#e8c040'); R(g, x - 1, 72, 7, 1, '#fff0a0'); } R(g, 44, 108, 40, 4, '#7a5a20');
+        R(g, 40, 34, 48, 6, '#d8b040'); R(g, 40, 34, 48, 1, '#f8e078');
+        for (let x = 34; x < 96; x += 3) { const y = 26 + Math.round(Math.sin(x * .45) * 2); R(g, x, y, 3, 2, '#3a8a3a'); }
+        for (const x of [38, 50, 62, 74, 86]) { R(g, x, 28, 3, 5, '#7a3a9a'); R(g, x + 1, 32, 1, 2, '#7a3a9a'); R(g, x, 28, 1, 1, '#c08ad8'); R(g, x + 3, 24, 2, 2, '#e8c040'); }
+        break;
+      case 'altar': c = mkc(40, 34); g = c.getContext('2d');   // the altar of burnt offering: horns, fire, and the ramp
+        R(g, 12, 26, 16, 8, '#b8b0a0'); for (let i = 0; i < 4; i++) R(g, 12 + i, 27 + i * 2, 16 - i * 2, 1, '#9a9280');
+        R(g, 2, 16, 36, 12, '#b6ae9c'); R(g, 2, 16, 36, 2, '#d4ccba'); R(g, 2, 26, 36, 2, '#8a8270'); R(g, 6, 8, 28, 10, '#c4bcaa'); R(g, 6, 8, 28, 2, '#e0d8c4');
+        for (const x of [6, 31]) { R(g, x, 4, 3, 6, '#d4ccba'); R(g, x, 4, 1, 6, '#ece6d4'); }
+        R(g, 10, 9, 20, 3, '#5a3818'); R(g, 14, 2, 12, 8, '#e86a1a'); R(g, 16, 0, 8, 6, '#f8b030'); R(g, 18, 2, 4, 4, '#fff0a0'); R(g, 12, 5, 2, 3, '#f8b030'); R(g, 26, 4, 2, 3, '#f8b030'); break;
+      case 'laver': c = mkc(24, 26); g = c.getContext('2d');   // the bronze laver where the priests wash
+        E(g, 12, 23, 10, 3, '#8a5a20'); R(g, 8, 14, 8, 9, '#a87028'); R(g, 8, 14, 2, 9, '#d8a048'); E(g, 12, 10, 11, 6, '#c08a30'); E(g, 12, 8, 9, 4, '#5ab0e0'); E(g, 10, 7, 4, 2, '#a8dcf8'); R(g, 1, 10, 22, 3, '#c08a30'); R(g, 1, 10, 22, 1, '#f0c068');
+        for (const x of [3, 8, 16, 21]) { R(g, x, 13, 2, 4, '#d8a048'); R(g, x, 17, 1, 2, '#8acaf0'); } break;
+      case 'menorahG': c = mkc(28, 68); g = c.getContext('2d');   // a giant golden lampstand of the Court of Women, with its bowls and a jar of oil
+        R(g, 6, 63, 16, 4, '#a88020'); R(g, 4, 65, 20, 3, '#e8c030'); R(g, 9, 60, 10, 4, '#e8c030'); R(g, 11, 14, 4, 48, '#e8c030'); R(g, 11, 14, 1, 48, '#f8e070'); R(g, 14, 14, 1, 48, '#a88020');
+        for (const y of [30, 44, 56]) { R(g, 9, y, 8, 3, '#f8e070'); R(g, 9, y + 2, 8, 1, '#a88020'); }
+        for (let i = 1; i <= 3; i++) { const y = 54 - i * 8, dx = i * 4; R(g, 13 - dx, y, dx * 2 + 2, 2, '#e8c030'); R(g, 13 - dx, y, dx * 2 + 2, 1, '#f8e070'); for (const x of [13 - dx, 13 + dx]) { R(g, x, 14, 2, y - 12, '#e8c030'); R(g, x, 14, 1, y - 12, '#f8e070'); } }
+        for (const x of [1, 5, 9, 13, 17, 21, 25]) { R(g, x - 1, 11, 4, 3, '#f8e070'); R(g, x - 1, 13, 4, 1, '#a88020'); R(g, x, 6 + (x % 2), 2, 5, '#f8a020'); R(g, x, 4 + (x % 2), 1, 3, '#fff0a0'); }
+        R(g, 23, 58, 5, 8, '#b06a40'); R(g, 23, 57, 5, 1, '#d08a58'); break;
+      case 'bgate': c = mkc(64, 64); g = c.getContext('2d');   // the Beautiful Gate (Nicanor): bronze, more precious than gold. The opening is see-through
+        for (const x0 of [0, 54]) { R(g, x0, 16, 10, 48, '#b87a2a'); R(g, x0, 16, 3, 48, '#e0a850'); R(g, x0 + 7, 16, 3, 48, '#7a4a18'); R(g, x0 - 2, 10, 14, 6, '#d8a048'); R(g, x0 - 2, 10, 14, 1, '#f8d078'); R(g, x0 - 1, 60, 12, 4, '#8a5a20'); for (let y = 24; y < 58; y += 8) R(g, x0 + 3, y, 4, 1, '#f0c068'); }
+        R(g, 0, 4, 64, 8, '#c8882e'); R(g, 0, 4, 64, 2, '#f0c068'); R(g, 0, 12, 64, 12, '#b87a2a'); R(g, 0, 12, 64, 1, '#e0a850');
+        for (let x = 6; x < 60; x += 8) { R(g, x, 6, 4, 4, '#f8e078'); R(g, x + 1, 7, 2, 2, '#c8882e'); }
+        E(g, 32, 28, 22, 13, '#d8a048'); R(g, 10, 28, 44, 36, '#d8a048'); C0(g, 32, 28, 20, 11); g.clearRect(12, 28, 40, 36);
+        for (const x0 of [10, 48]) { R(g, x0, 28, 6, 36, '#a86a20'); R(g, x0, 28, 1, 36, '#e0a850'); for (const y of [34, 44, 54]) { R(g, x0 + 2, y, 2, 2, '#f8d078'); } } break;
+      case 'shofarchest': c = mkc(18, 26); g = c.getContext('2d');   // one of the thirteen trumpet-shaped treasury chests
+        R(g, 3, 14, 12, 10, '#8a5a20'); R(g, 3, 14, 12, 1, '#c08a30'); R(g, 3, 23, 12, 1, '#5a3a10');
+        for (let y = 0; y < 14; y++) { const w = 2 + Math.floor(y * .65); R(g, 9 - w, y, w * 2, 1, '#c08a30'); R(g, 9 - w, y, 1, 1, '#f0c068'); }
+        R(g, 4, 0, 10, 2, '#e0a850'); R(g, 6, 16, 6, 2, '#2a1a08'); R(g, 7, 20, 4, 3, '#e8c880'); break;
+      case 'dovecage': c = mkc(22, 20); g = c.getContext('2d');   // doves for sale: the offering of the poor
+        R(g, 2, 8, 18, 11, '#2a2218'); R(g, 1, 6, 20, 3, '#9a7a40'); R(g, 1, 6, 20, 1, '#c8a060'); R(g, 1, 18, 20, 2, '#6a4a22'); for (let x = 3; x < 20; x += 3) R(g, x, 9, 1, 9, '#c8a870');
+        E(g, 7, 14, 2, 2, '#fff'); E(g, 14, 15, 2, 2, '#f4f0e4'); R(g, 8, 13, 1, 1, '#e8a030'); R(g, 15, 14, 1, 1, '#e8a030'); E(g, 11, 4, 3, 2, '#fff'); R(g, 14, 3, 2, 1, '#e8a030'); R(g, 10, 3, 1, 1, '#222'); break;
       case 'wolf': c = mkc(22, 14); g = c.getContext('2d');
         R(g, 3, 10, 2, 4, '#6a6a74'); R(g, 7, 10, 2, 4, '#6a6a74'); R(g, 13, 10, 2, 4, '#6a6a74'); R(g, 16, 10, 2, 4, '#6a6a74'); R(g, 3, 4, 15, 7, '#8a8a96'); R(g, 15, 2, 6, 6, '#8a8a96'); R(g, 20, 5, 2, 2, '#222'); R(g, 15, 0, 2, 3, '#6a6a74'); R(g, 18, 1, 1, 1, '#fd0'); R(g, 0, 4, 3, 2, '#6a6a74');
         R(g, 3, 4, 13, 1, '#6e6e7a'); R(g, 4, 9, 11, 2, '#b4b4c0'); R(g, 18, 6, 3, 2, '#c4c4cc'); R(g, 15, 1, 1, 1, '#c88a8a'); R(g, 0, 3, 1, 1, '#9a9aa6'); R(g, 19, 8, 2, 1, '#3a3a40'); break;   // dark back, pale belly and muzzle
@@ -362,8 +513,8 @@ const Spr = (() => {
       const f = {}; for (const d of ['down', 'up', 'left', 'right']) f[d] = [0, 1, 2, 3, 4].map(st => drawChar(desc, d, st));
       s = { f, w: 18, h: 26 };
     } else {
-      const kinds = ['crossJ', 'crossD', 'crossL', 'crossR', 'crossBare', 'crossCarry', 'pig', 'jar', 'boat', 'burnbush', 'ashbush', 'sheep', 'donkey', 'camel', 'fire', 'manger', 'sign', 'bundle', 'dove', 'bird', 'wolf', 'hay', 'hayBaby', 'ox', 'goat', 'bed', 'table', 'shelf', 'mat', 'bigtree', 'bigolive', 'cypress', 'bigpalm', 'tent', 'bigrock'];
-      if (!kinds.includes(id)) id = 'villager';
+      const kinds = ['crossJ', 'crossD', 'crossL', 'crossR', 'crossBare', 'crossCarry', 'pig', 'jar', 'boat', 'burnbush', 'ashbush', 'sheep', 'donkey', 'camel', 'fire', 'manger', 'sign', 'bundle', 'dove', 'bird', 'wolf', 'hay', 'hayBaby', 'ox', 'goat', 'bed', 'table', 'shelf', 'mat', 'bigtree', 'bigolive', 'cypress', 'bigpalm', 'tent', 'bigrock', 'sycamore', 'jars6', 'taxbooth', 'mustard', 'preach', 'barrenfig', 'oilpress', 'rooster', 'tomb', 'well', 'netrack', 'fold', 'watchtower', 'gatearch', 'tower', 'antonia', 'sanctuary', 'altar', 'laver', 'menorahG', 'bgate', 'shofarchest', 'dovecage'];
+      if (!kinds.includes(id)) return sheets[id] = sheet('villager');   // unknown sprite name: draw a villager rather than crash the draw loop
       const a = [drawAnimal(id, 0), drawAnimal(id, 1)], b = a.map(flip);
       s = { f: { down: a, up: a, right: a, left: b }, w: a[0].width, h: a[0].height, anim: true };
     }
@@ -472,7 +623,7 @@ const Spr = (() => {
     g.putImageData(im, 0, 0);
   }
   /* ---------- tiles ---------- */
-  const SOLID = new Set('TPofbr#wW~k^OdVLyzaueENnJjDFCKBxQUAHXMpRYSZ%`´'.split(''));
+  const SOLID = new Set('TPofbr#wW~k^OdVLyzaueENnJjDFCKBxQUAHXMpRYSZ%`´139'.split(''));
   const tcache = {};
   /* colour grades: every region gets its own palette (a CSS filter baked into the cached tile) */
   const PAL = {
@@ -652,6 +803,16 @@ const Spr = (() => {
         for (let x = 0; x < 16; x += 2) R(g, x, 0, 1, 2 + (x % 3), '#a8883e'); R(g, 0, 0, 16, 1, '#6a5020');   // straw fringe of the eaves
         if (ch === 'Z') { R(g, 6, 0, 4, 16, '#6a4a2a'); R(g, 6, 0, 1, 16, '#8a6a3a'); R(g, 9, 0, 1, 16, '#4a3018'); R(g, 5, 14, 6, 2, 'rgba(0,0,0,.25)'); }
         break;
+      /* the Temple: polished marble with gold inlay, broad steps, Herod's great drafted-margin ashlars, the low lattice of the Soreg, a golden lamp */
+      case 't': R(g, 0, 0, 16, 16, '#e6e0d0'); R(g, 0, 0, 16, 1, '#f3eee2'); R(g, 0, 7, 16, 1, '#d2cbb6'); R(g, 7, 0, 1, 16, '#d2cbb6'); R(g, 0, 15, 16, 1, '#c4bca6'); R(g, 15, 0, 1, 16, '#cfc8b2');
+        R(g, 7, 7, 2, 2, '#d8b858'); P(7, 7, '#f0d878'); R(g, 2, 10, 4, 1, '#dcd4c0'); R(g, 10, 3, 3, 1, '#dcd4c0'); P(3, 3, '#f8f4ea'); P(11, 12, '#f8f4ea'); break;
+      case '8': R(g, 0, 0, 16, 16, '#d8d1bd'); for (let i = 0; i < 4; i++) { const y = i * 4; R(g, 0, y, 16, 1, '#f6f1e4'); R(g, 0, y + 1, 16, 2, '#e4ddca'); R(g, 0, y + 3, 16, 1, '#a89f88'); } break;
+      case '9': R(g, 0, 0, 16, 16, '#cfc4a6'); R(g, 2, 2, 12, 4, '#e3dac0'); R(g, 2, 2, 12, 1, '#f0e8d2'); R(g, 2, 5, 12, 1, '#bfb394'); R(g, 0, 7, 16, 1, '#8a7e62'); R(g, 0, 15, 16, 1, '#8a7e62');
+        R(g, 9, 8, 1, 7, '#8a7e62'); R(g, 1, 10, 7, 4, '#e3dac0'); R(g, 1, 10, 7, 1, '#f0e8d2'); R(g, 11, 10, 4, 4, '#e3dac0'); R(g, 11, 10, 4, 1, '#f0e8d2'); P(4, 12, '#cfc4a6'); break;
+      case '3': R(g, 0, 0, 16, 16, '#e6e0d0'); R(g, 0, 7, 16, 1, '#d2cbb6'); R(g, 0, 15, 16, 1, '#c4bca6'); R(g, 0, 4, 16, 2, '#f2ecda'); R(g, 0, 6, 16, 8, '#d6cdb4'); R(g, 0, 13, 16, 1, '#8a8068');
+        for (let i = 0; i < 8; i++) { R(g, i * 2, 6 + (i % 4), 1, 1, '#8a8068'); R(g, 15 - i * 2, 6 + (i % 4) + 3, 1, 1, '#8a8068'); } R(g, 0, 3, 2, 11, '#bfb59a'); R(g, 14, 3, 2, 11, '#bfb59a'); R(g, 0, 3, 2, 1, '#ece6d4'); R(g, 14, 3, 2, 1, '#ece6d4'); break;
+      case '1': R(g, 0, 0, 16, 16, '#e6e0d0'); R(g, 0, 0, 16, 1, '#f3eee2'); R(g, 0, 15, 16, 1, '#c4bca6'); R(g, 15, 0, 1, 16, '#cfc8b2'); R(g, 5, 13, 7, 2, '#a88020'); R(g, 6, 12, 5, 1, '#e8c030'); R(g, 8, 9, 1, 4, '#e8c030'); R(g, 2, 9, 13, 1, '#e8c030'); R(g, 2, 9, 13, 1, '#e8c030');
+        for (const x of [2, 4, 6, 8, 10, 12, 14]) { R(g, x, 6, 1, 4, '#e8c030'); P(x, 5, '#a88020'); P(x, 4 - fr, '#f8a020'); P(x, 3 - fr, '#fff0a0'); } break;
       case '%': break;   // an invisible blocker under a big prop (the ground is drawn beneath it)
       default: R(g, 0, 0, 16, 16, '#f0f');
     }

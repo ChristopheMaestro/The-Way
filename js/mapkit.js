@@ -140,7 +140,7 @@ const LOOK = {
   golgotha: { edge: ['^', 'O', '^', '^'], deep: ['^'], groves: [['O', .9], ['x', 1.0]] },
   tomb8: { edge: ['^', 'M', '^', 'O', '^'], deep: ['^'] }
 };
-const NO_POLISH = ['house', 'sea', 'upper', 'upper12', 'wild40', 'courtyard'];
+const NO_POLISH = ['house', 'sea', 'upper', 'upper12', 'wild40', 'courtyard', 'jgate', 'jerusalem', 'jquarter', 'jsteps', 'temple'];
 function polish(d, id) {
   if (!d || !d.g || NO_POLISH.includes(id) || d.polished) return d;
   const w = d.w, h = d.h, g = d.g, SOL = Spr.SOLID, N = w * h, I = (x, y) => y * w + x, inb = (x, y) => x >= 0 && y >= 0 && x < w && y < h;

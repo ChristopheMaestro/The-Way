@@ -6,6 +6,18 @@ Inspired by *Undertale* and *Deltarune*: every enemy can be spared, and every bo
 
 Made by Christophe Maestro, 2026. A birthday gift for Guy la Guiche. Licence: GNU GPL v3.
 
+## Screenshots
+
+![The opening: the Prologue of John, told over seven pictures](screenshots/intro.gif)
+
+![The title screen](screenshots/title.png)
+
+| Bethlehem (chapter 1) | Jerusalem (chapter 9) |
+|---|---|
+| ![Joseph and Mary arrive in Bethlehem](screenshots/bethlehem.png) | ![The market square of Jerusalem, around the well](screenshots/TheWayJerusalem.png) |
+
+![A fight: the party dodges bullets inside the box while the enemy looks on](screenshots/TheWayFight.png)
+
 ## Play
 
 Open `index.html` in a recent browser (Chrome, Edge, Brave, Firefox, Safari). There is nothing to install and no server needed, and it works offline. It can also be hosted on any static web host.
@@ -66,6 +78,8 @@ Options: language, sound, debug mode, replay the intro. Turning **debug mode** o
 - **Touch controls** on or off
 
 These choices are remembered in the browser.
+
+**Map viewer:** open `debug/maps.html` to browse every map chapter by chapter, drawn live by the game's own renderer at in-game resolution. Wheel = zoom, drag = pan, `[` `]` = previous / next map, optional grid and exit/trigger overlays. `?ch=6&map=boatshore` opens a map directly.
 
 Useful addresses for testing:
 

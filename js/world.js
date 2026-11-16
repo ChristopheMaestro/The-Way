@@ -1,6 +1,6 @@
 'use strict';
 /* trees, rocks, bushes and palms are drawn over whatever ground is really around them (sand next to sand, grass next to grass) */
-const PROPS = 'TPoyapu%', GROUNDS = '.,=sqm';
+const PROPS = 'TPoyapu%', GROUNDS = '.,=sqmlt';
 function groundUnder(m, x, y, ch) {
   const cnt = {}; let best = null, bn = 0;
   for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const yy = y + dy, xx = x + dx; if ((dx || dy) && yy >= 0 && xx >= 0 && yy < m.h && xx < m.w) { const c = m.g[yy][xx]; if (GROUNDS.includes(c)) { cnt[c] = (cnt[c] || 0) + (dx && dy ? 1 : 2); if (cnt[c] > bn) { bn = cnt[c]; best = c; } } } }
@@ -200,7 +200,7 @@ class World {
     const m = this.map, cx = Math.round(this.cam.x) + (this.shake > 0 ? Math.round(Math.sin(Game.time * 70) * 3) : 0), cy = Math.round(this.cam.y) + (this.shake > 0 ? Math.round(Math.cos(Game.time * 53) * 2) : 0), fr = Math.floor(Game.time * 2) % 2;
     ctx.fillStyle = '#000'; ctx.fillRect(0, 0, SW, SH);
     const x0 = Math.max(0, Math.floor(cx / 16)), y0 = Math.max(0, Math.floor(cy / 16)), x1 = Math.min(m.w, Math.ceil((cx + SW) / 16)), y1 = Math.min(m.h, Math.ceil((cy + SH) / 16));
-    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) { const ch = m.g[y][x]; if (PROPS.includes(ch)) { ctx.drawImage(Spr.tile(groundUnder(m, x, y, ch), 0, m.pal), x * 16 - cx, y * 16 - cy); ctx.drawImage(Spr.tile(ch, 0, m.pal, true), x * 16 - cx, y * 16 - cy); } else ctx.drawImage(Spr.tile(ch, '~+k'.includes(ch) ? fr : 0, m.pal), x * 16 - cx, y * 16 - cy); }
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) { const ch = m.g[y][x]; if (PROPS.includes(ch)) { ctx.drawImage(Spr.tile(groundUnder(m, x, y, ch), 0, m.pal), x * 16 - cx, y * 16 - cy); ctx.drawImage(Spr.tile(ch, 0, m.pal, true), x * 16 - cx, y * 16 - cy); } else ctx.drawImage(Spr.tile(ch, '~+k1'.includes(ch) ? fr : 0, m.pal), x * 16 - cx, y * 16 - cy); }
     if (m.drawBack) m.drawBack(this, cx, cy);
     const items = [];
     if (m.sorted) items.push({ y: m.sorted.y, f: () => m.sorted.f(this, cx, cy) });
